@@ -1,11 +1,13 @@
-*{
+/* General Page Styling */
+* {
     margin: 0;
     padding: 0;
     font-family: 'Poppins', sans-serif;
     box-sizing: border-box;
 }
 
-.container{
+/* Container Setup */
+.container {
     width: 100%;
     height: 100vh;
     background: #e3f9ff;
@@ -14,47 +16,88 @@
     justify-content: center;
 }
 
-.calculator{
+/* Calculator Styling */
+.calculator {
     background: #3a4452;
-    padding:  20px;
+    padding: 20px;
     border-radius: 10px;
-}
-
-.calculator form input{
-    border: 0;
-    outline: 0;
-    width: 60px;
-    height: 60px;
-    border-radius: 10px;
-    box-shadow: -8px -8px 15px rgba(255, 255, 255, 0.1), 5px 5px 15px rgba(0, 0, 0, 0.2);
-    background: transparent;
-    font-size: 20px;
-    color: #fff;
-    cursor: pointer;
-    margin: 10px;
-}
-
-form .display{
+    width: 380px;
     display: flex;
-    justify-content: flex-end;
-    margin: 20px 0;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
 }
 
-form .display input{
+/* Screen Styling */
+.screen {
+    width: 100%;
+    margin-bottom: 10px;
+}
+.screen input {
+    width: 100%;
+    height: 60px;
+    border: none;
+    border-radius: 10px;
     text-align: right;
-    flex: 1;
-    font-size: 45px;
-    box-shadow: none;
-    color: #000  ;
+    font-size: 30px;
+    color: #000;
     background-color: #C0FFB3;
+    padding: 10px;
+    box-shadow: none;
 }
 
-form  input.equal{
-    width: 145px;
-
+/* Keys Grid */
+.keys {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 4px; /* Reduced gap to make buttons closer together */
 }
 
-form input.operator{
+/* Button Styling */
+.keys button {
+    width: 100%;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    background: #555;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: -8px -8px 15px rgba(255,255,255,0.1), 5px 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Special Button Colors */
+.keys button.operator {
     color: #33ffd8;
+}
+.keys button.equal {
+    background: #ff9933;
+    color: #000;
+}
+.keys button.shift {
+    background: #ffcf33;
+    color: #000;
+}
+.keys button.alpha {
+    background: #33ff33;
+    color: #000;
+}
+.keys button.red {
+    background: #ff3333;
+}
+.keys button.arrow {
+    background: #777;
+}
+.keys button.enter {
+    background: #ff66aa;
+}
+.keys button.orange {
+    background: #ff9933;
+    color: #000;
+}
 
+/* Wide Button */
+.keys button.wide {
+    grid-column: span 2;
 }

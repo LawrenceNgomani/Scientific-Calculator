@@ -2,54 +2,111 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Ngomani's Scientific Calculator</title>
+  <title>Sharp WriteView Layout with Screen</title>
   <link rel="stylesheet" href="style.css">
-
-
 </head>
-
+<body>
 <div class="container">
   <div class="calculator">
-      <form>
-        <div class="display">
-          <input type="text" name="display">
-        </div>
-        <div>
-          <input type="button" value="Clear" onclick="display.value = '' " class="operator">
-          <input type="button" value="Del" onclick="display.value = display.value.toString().slice(0,-1) " class="operator">
-          <input type="button" value="." onclick="display.value += '.' " class="operator">
-          <input type="button" value="÷" onclick="display.value += '/' " class="operator">
-        </div>
-        <div>
-          <input type="button" value="7" onclick="display.value += '7' ">
-          <input type="button" value="8" onclick="display.value += '8' ">
-          <input type="button" value="9" onclick="display.value += '9' ">
-          <input type="button" value="ˣ" onclick="display.value += '*' " class="operator">
-        </div>
-        <div>
-          <input type="button" value="4" onclick="display.value += '4' ">
-          <input type="button" value="5" onclick="display.value += '5' ">
-          <input type="button" value="6" onclick="display.value += '6' ">
-          <input type="button" value="-" onclick="display.value += '-' " class="operator">
-        </div>
-        <div>
-          <input type="button" value="1" onclick="display.value += '1' ">
-          <input type="button" value="2" onclick="display.value += '2' ">
-          <input type="button" value="3" onclick="display.value += '3' ">
-          <input type="button" value="+" onclick="display.value += '+' " class="operator">
-        </div>
-        <div>
-          <input type="button" value="00" onclick="display.value += '00' ">
-          <input type="button" value="0" onclick="display.value += '0' ">
-          <input type="button" value="=" onclick="display.value=eval(display.value)" class="equal operator" >
-        </div>
+    <!-- Screen: Read-only display for calculations -->
+    <div class="screen">
+      <input type="text" id="calc-screen" readonly value="0">
+    </div>
+    <!-- Buttons -->
+    <div class="keys">
+      <button class="shift">2ndF</button>
+      <button class="alpha">ALPHA</button>
+      <button>MCL</button>
+      <button>RCL</button>
+      <button>D1</button>
+      <button>D2</button>
+      <button>D3</button>
+      <button>D4</button>
+      <button class="red">ON/C</button>
+      <button class="red">AC</button>
 
-      </form>
+      <button class="arrow">▲</button>
+      <button class="arrow">◄</button>
+      <button class="arrow">►</button>
+      <button class="arrow">▼</button>
+      <button class="enter">ENTER</button>
+      <button>SET UP</button>
+      <button>DRG</button>
+      <button>FSE</button>
+      <button>EDITOR</button>
+      <button>CFRST</button>
 
+      <button>hyp</button>
+      <button>sin</button>
+      <button>cos</button>
+      <button>tan</button>
+      <button>sin⁻¹</button>
+      <button>cos⁻¹</button>
+      <button>tan⁻¹</button>
+      <button>x²</button>
+      <button>√</button>
+      <button>x³</button>
+
+      <button>∛</button>
+      <button>x^y</button>
+      <button>x^(1/y)</button>
+      <button>log</button>
+      <button>ln</button>
+      <button>10^x</button>
+      <button>e^x</button>
+      <button>1/x</button>
+      <button>Ran#</button>
+      <button>nPr</button>
+
+      <button>nCr</button>
+      <button>x!</button>
+      <button>(</button>
+      <button>)</button>
+      <button>Deg</button>
+      <button>Rad</button>
+      <button>Gra</button>
+      <button>MODE</button>
+      <button>STAT</button>
+      <button>BASE</button>
+
+      <button>Matrix</button>
+      <button>SOLV</button>
+      <button>d/dx</button>
+      <button>∫dx</button>
+      <button>CALC</button>
+      <button>X</button>
+      <button>ANS</button>
+      <button>(-)</button>
+      <button>0</button>
+      <button>.</button>
+
+      <button>1</button>
+      <button>2</button>
+      <button>3</button>
+      <button>+</button>
+      <button>-</button>
+      <button>4</button>
+      <button>5</button>
+      <button>6</button>
+      <button>×</button>
+      <button>÷</button>
+
+      <button>7</button>
+      <button>8</button>
+      <button>9</button>
+      <button>E</button>
+      <button>DEL</button>
+      <button>M+</button>
+      <button>M-</button>
+      <button>STO</button>
+      <button class="wide orange">=</button>
+    </div>
   </div>
 </div>
-
-<body>
-
+<script>
+  // For demonstration purposes, the screen is preset with "0".
+  // Additional JavaScript for functionality can be added here.
+  document.getElementById('calc-screen').value = "0";
+</script>
 </body>
 </html>
