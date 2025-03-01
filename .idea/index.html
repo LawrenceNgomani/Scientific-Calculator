@@ -2,19 +2,57 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Sharp WriteView Layout with Screen</title>
+  <title>Scientific Calculator with 2ndF Toggle</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Optional inline styles for demonstration */
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+    .calculator {
+      border: 1px solid #333;
+      padding: 10px;
+    }
+    .screen input {
+      width: 100%;
+      font-size: 1.5em;
+      text-align: right;
+      padding: 5px;
+    }
+    .keys {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      grid-gap: 5px;
+      margin-top: 10px;
+    }
+    button {
+      padding: 10px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    .wide {
+      grid-column: span 2;
+    }
+    .orange {
+      background: orange;
+    }
+    .red {
+      background: lightcoral;
+    }
+  </style>
 </head>
 <body>
 <div class="container">
   <div class="calculator">
-    <!-- Screen: Read-only display for calculations -->
+    <!-- Screen -->
     <div class="screen">
       <input type="text" id="calc-screen" readonly value="0">
     </div>
     <!-- Buttons -->
     <div class="keys">
-      <button class="shift">2ndF</button>
+      <!-- Top row -->
+      <button id="second-toggle">2ndF</button>
       <button class="alpha">ALPHA</button>
       <button>MCL</button>
       <button>RCL</button>
@@ -25,6 +63,7 @@
       <button class="red">ON/C</button>
       <button class="red">AC</button>
 
+      <!-- Navigation row -->
       <button class="arrow">▲</button>
       <button class="arrow">◄</button>
       <button class="arrow">►</button>
@@ -36,28 +75,23 @@
       <button>EDITOR</button>
       <button>CFRST</button>
 
+      <!-- Dual-function keys row -->
       <button>hyp</button>
-      <button>sin</button>
-      <button>cos</button>
-      <button>tan</button>
-      <button>sin⁻¹</button>
-      <button>cos⁻¹</button>
-      <button>tan⁻¹</button>
-      <button>x²</button>
-      <button>√</button>
-      <button>x³</button>
-
-      <button>∛</button>
-      <button>x^y</button>
-      <button>x^(1/y)</button>
+      <!-- Dual keys with data attributes for primary and secondary labels -->
+      <button class="dual" data-primary="sin" data-secondary="sin⁻¹">sin</button>
+      <button class="dual" data-primary="cos" data-secondary="cos⁻¹">cos</button>
+      <button class="dual" data-primary="tan" data-secondary="tan⁻¹">tan</button>
+      <button class="dual" data-primary="x²" data-secondary="x³">x²</button>
+      <button class="dual" data-primary="√" data-secondary="∛">√</button>
       <button>log</button>
       <button>ln</button>
       <button>10^x</button>
       <button>e^x</button>
+
+      <!-- Other function keys -->
       <button>1/x</button>
       <button>Ran#</button>
       <button>nPr</button>
-
       <button>nCr</button>
       <button>x!</button>
       <button>(</button>
@@ -65,10 +99,10 @@
       <button>Deg</button>
       <button>Rad</button>
       <button>Gra</button>
+
       <button>MODE</button>
       <button>STAT</button>
       <button>BASE</button>
-
       <button>Matrix</button>
       <button>SOLV</button>
       <button>d/dx</button>
@@ -76,6 +110,7 @@
       <button>CALC</button>
       <button>X</button>
       <button>ANS</button>
+
       <button>(-)</button>
       <button>0</button>
       <button>.</button>
@@ -85,6 +120,7 @@
       <button>3</button>
       <button>+</button>
       <button>-</button>
+
       <button>4</button>
       <button>5</button>
       <button>6</button>
@@ -96,6 +132,7 @@
       <button>9</button>
       <button>E</button>
       <button>DEL</button>
+
       <button>M+</button>
       <button>M-</button>
       <button>STO</button>
@@ -103,9 +140,31 @@
     </div>
   </div>
 </div>
+
 <script>
-  // For demonstration purposes, the screen is preset with "0".
-  // Additional JavaScript for functionality can be added here.
+  // Flag to track 2nd function mode
+  let isSecondFunction = false;
+
+  // Function to update dual-function button labels
+  function updateDualButtons() {
+    document.querySelectorAll('.dual').forEach(button => {
+      if (isSecondFunction) {
+        button.textContent = button.getAttribute('data-secondary');
+      } else {
+        button.textContent = button.getAttribute('data-primary');
+      }
+    });
+  }
+
+  // Toggle the 2nd function state when the 2ndF button is clicked
+  document.getElementById('second-toggle').addEventListener('click', () => {
+    isSecondFunction = !isSecondFunction;
+    updateDualButtons();
+    // Optionally: visually indicate the active state (e.g., change background color)
+    document.getElementById('second-toggle').classList.toggle('active', isSecondFunction);
+  });
+
+  // Initialize screen value
   document.getElementById('calc-screen').value = "0";
 </script>
 </body>
