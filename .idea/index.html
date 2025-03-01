@@ -27,7 +27,7 @@
       background: #3a4452;
       padding: 20px;
       border-radius: 10px;
-      width: 600px;  /* Wider for comfortable button fit */
+      width: 600px;  /* Wider for comfortable key spacing */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -51,16 +51,57 @@
       padding: 10px;
     }
 
-    /* Keys Grid */
+    /* Keys Container */
     .keys {
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Top Keys (Memory & basic functions) */
+    .top-keys {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      grid-gap: 4px;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 4px;
+    }
+
+    /* Function Keys (Trig, power, roots, etc.) */
+    .function-keys {
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      gap: 4px;
+    }
+
+    /* Bottom Keys Container */
+    .bottom-keys {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Numpad (left bottom column) */
+    .numpad {
+      flex: 2;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+
+    /* Operators (right bottom column) */
+    .operators {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+
+    /* Equals row */
+    .equals-row {
+      width: 100%;
     }
 
     /* Button Styling */
-    .keys button {
+    button {
       width: 100%;
       height: 50px;
       border: none;
@@ -71,31 +112,32 @@
       cursor: pointer;
       box-shadow: -8px -8px 15px rgba(255,255,255,0.1), 5px 5px 15px rgba(0,0,0,0.2);
     }
-    .keys button.operator {
+    /* Special Button Colors */
+    button.operator {
       color: #33ffd8;
     }
-    .keys button.equal {
+    button.equal {
       background: #ff9933;
       color: #000;
     }
-    .keys button.shift {
+    button.shift {
       background: #ffcf33;
       color: #000;
     }
-    .keys button.alpha {
+    button.alpha {
       background: #33ff33;
       color: #000;
     }
-    .keys button.red {
+    button.red {
       background: #ff3333;
     }
-    .keys button.orange {
+    button.orange {
       background: #ff9933;
       color: #000;
     }
 
-    /* Wide Button */
-    .keys button.wide {
+    /* Wide Button for Equals */
+    .wide {
       grid-column: span 2;
     }
   </style>
@@ -107,48 +149,59 @@
     <div class="screen">
       <input type="text" id="calc-screen" readonly value="0">
     </div>
-    <!-- Buttons -->
+    <!-- Keys Container -->
     <div class="keys">
-      <!-- Top Row -->
-      <button id="second-toggle" class="shift">2ndF</button>
-      <button class="alpha">ALPHA</button>
-      <button>MCL</button>
-      <button>RCL</button>
-      <button class="red">ON/C</button>
-      <button class="red">AC</button>
-
-      <!-- Scientific Functions -->
-      <button>hyp</button>
-      <button class="dual" data-primary="sin" data-secondary="sin⁻¹">sin</button>
-      <button class="dual" data-primary="cos" data-secondary="cos⁻¹">cos</button>
-      <button class="dual" data-primary="tan" data-secondary="tan⁻¹">tan</button>
-      <button class="dual" data-primary="x²" data-secondary="x³">x²</button>
-      <button class="dual" data-primary="√" data-secondary="∛">√</button>
-      <button class="dual" data-primary="log" data-secondary="ln">log</button>
-      <button class="dual" data-primary="10^x" data-secondary="e^x">10^x</button>
-      <button class="dual" data-primary="1/x" data-secondary="Ran#">1/x</button>
-
-      <!-- Parentheses & Basic Operators -->
-      <button>(</button>
-      <button>)</button>
-      <button class="operator">+</button>
-      <button class="operator">-</button>
-      <button class="operator">×</button>
-      <button class="operator">÷</button>
-
-      <!-- Number Pad -->
-      <button>7</button>
-      <button>8</button>
-      <button>9</button>
-      <button>4</button>
-      <button>5</button>
-      <button>6</button>
-      <button>1</button>
-      <button>2</button>
-      <button>3</button>
-      <button>0</button>
-      <button>.</button>
-      <button class="equal wide">=</button>
+      <!-- Top Keys Row -->
+      <div class="top-keys">
+        <button id="second-toggle" class="shift">2ndF</button>
+        <button class="alpha">ALPHA</button>
+        <button>MCL</button>
+        <button>RCL</button>
+        <button class="red">ON/C</button>
+        <button class="red">AC</button>
+      </div>
+      <!-- Function Keys Row -->
+      <div class="function-keys">
+        <button>hyp</button>
+        <button class="dual" data-primary="sin" data-secondary="sin⁻¹">sin</button>
+        <button class="dual" data-primary="cos" data-secondary="cos⁻¹">cos</button>
+        <button class="dual" data-primary="tan" data-secondary="tan⁻¹">tan</button>
+        <button class="dual" data-primary="x²" data-secondary="x³">x²</button>
+        <button class="dual" data-primary="√" data-secondary="∛">√</button>
+        <button class="dual" data-primary="log" data-secondary="ln">log</button>
+        <button class="dual" data-primary="10^x" data-secondary="e^x">10^x</button>
+        <button class="dual" data-primary="1/x" data-secondary="Ran#">1/x</button>
+      </div>
+      <!-- Bottom Keys: Numpad (left) and Operators (right) -->
+      <div class="bottom-keys">
+        <!-- Number Pad -->
+        <div class="numpad">
+          <button>7</button>
+          <button>8</button>
+          <button>9</button>
+          <button>4</button>
+          <button>5</button>
+          <button>6</button>
+          <button>1</button>
+          <button>2</button>
+          <button>3</button>
+          <button>0</button>
+          <button>.</button>
+        </div>
+        <!-- Operators -->
+        <div class="operators">
+          <button class="operator">+</button>
+          <button class="operator">-</button>
+          <button class="operator">×</button>
+          <button class="operator">÷</button>
+          <button>(</button>
+          <button>)</button>
+        </div>
+      </div>
+      <!-- Equals Row -->
+      <div class="equals-row">
+        <button class="equal wide">=</button>
+      </div>
     </div>
   </div>
 </div>
@@ -157,14 +210,14 @@
   // Toggle flag for 2nd function mode
   let isSecondFunction = false;
 
-  // Function to update dual-function button labels
+  // Update dual-function button labels
   function updateDualButtons() {
     document.querySelectorAll('.dual').forEach(button => {
       button.textContent = isSecondFunction ? button.getAttribute('data-secondary') : button.getAttribute('data-primary');
     });
   }
 
-  // Toggle the 2nd function state when 2ndF button is clicked
+  // Toggle 2ndF mode when the button is clicked
   document.getElementById('second-toggle').addEventListener('click', () => {
     isSecondFunction = !isSecondFunction;
     updateDualButtons();
