@@ -21,7 +21,7 @@
     background: #3a4452;
     padding: 20px;
     border-radius: 10px;
-    width: 380px;
+    width: 600px;  /* Increased width */
     display: flex;
     flex-direction: column;
     align-items: center;
