@@ -1,267 +1,272 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Sharp WriteView Scientific Calculator</title>
-  <style>
-    /* General Page Styling */
-    * {
-      margin: 0;
-      padding: 0;
-      font-family: 'Poppins', sans-serif;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <title>Sharp WriteView Scientific Calculator</title>
+    <style>
+        /* General Page Styling */
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
+        }
 
-    /* Container Setup */
-    .container {
-      width: 100%;
-      height: 100vh;
-      background: #e3f9ff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+        /* Container Setup */
+        .container {
+            width: 100%;
+            height: 100vh;
+            background: #e3f9ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    /* Calculator Styling */
-    .calculator {
-      background: #3a4452;
-      padding: 20px;
-      border-radius: 10px;
-      width: 600px;  /* Wider for comfortable key spacing */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      box-shadow: 0 0 10px rgba(0,0,0,0.4);
-    }
+        /* Calculator Styling */
+        .calculator {
+            background: #3a4452;
+            padding: 20px;
+            border-radius: 10px;
+            width: 600px;  /* Wider for comfortable key spacing */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.4);
+        }
 
-    /* Screen Styling */
-    .screen {
-      width: 100%;
-      margin-bottom: 10px;
-    }
-    .screen input {
-      width: 100%;
-      height: 60px;
-      border: none;
-      border-radius: 10px;
-      text-align: right;
-      font-size: 30px;
-      color: #000;
-      background-color: #C0FFB3;
-      padding: 10px;
-    }
+        /* Screen Styling */
+        .screen {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .screen input {
+            width: 100%;
+            height: 60px;
+            border: none;
+            border-radius: 10px;
+            text-align: right;
+            font-size: 30px;
+            color: #000;
+            background-color: #C0FFB3;
+            padding: 10px;
+        }
 
-    /* Keys Container */
-    .keys {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+        /* Keys Container */
+        .keys {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-    /* Top Keys (Memory & basic functions) */
-    .top-keys {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 4px;
-    }
+        /* Top Keys (Memory & basic functions) */
+        .top-keys {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 4px;
+        }
 
-    /* Function Keys (Trig, powers, roots, etc.) */
-    .function-keys {
-      display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap: 4px;
-    }
+        /* Function Keys (Trig, powers, roots, etc.) */
+        .function-keys {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 4px;
+        }
 
-    /* Bottom Keys Container */
-    .bottom-keys {
-      display: flex;
-      gap: 10px;
-    }
+        /* Bottom Keys Container */
+        .bottom-keys {
+            display: flex;
+            gap: 10px;
+        }
 
-    /* Numpad (left bottom column) */
-    .numpad {
-      flex: 2;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 4px;
-    }
+        /* Numpad (left bottom column) */
+        .numpad {
+            flex: 2;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+        }
 
-    /* Operators (right bottom column) */
-    .operators {
-      flex: 1;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 4px;
-    }
+        /* Operators (right bottom column) */
+        .operators {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4px;
+        }
 
-    /* Equals Row */
-    .equals-row {
-      width: 100%;
-    }
+        /* Equals Row */
+        .equals-row {
+            width: 100%;
+        }
 
-    /* Button Styling */
-    button {
-      width: 100%;
-      height: 50px;
-      border: none;
-      border-radius: 10px;
-      background: #555;
-      color: #fff;
-      font-size: 20px;
-      cursor: pointer;
-      box-shadow: -8px -8px 15px rgba(255,255,255,0.1), 5px 5px 15px rgba(0,0,0,0.2);
-    }
-    /* Special Button Colors */
-    button.operator {
-      color: #33ffd8;
-    }
-    button.equal {
-      background: #ff9933;
-      color: #000;
-    }
-    button.shift {
-      background: #ffcf33;
-      color: #000;
-    }
-    button.alpha {
-      background: #33ff33;
-      color: #000;
-    }
-    button.red {
-      background: #ff3333;
-    }
-    button.orange {
-      background: #ff9933;
-      color: #000;
-    }
+        /* Button Styling */
+        button {
+            width: 100%;
+            height: 50px;
+            border: none;
+            border-radius: 10px;
+            background: #555;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: -8px -8px 15px rgba(255,255,255,0.1), 5px 5px 15px rgba(0,0,0,0.2);
+        }
+        /* Special Button Colors */
+        button.operator {
+            color: #33ffd8;
+        }
+        button.equal {
+            background: #ff9933;
+            color: #000;
+        }
+        button.shift {
+            background: #ffcf33;
+            color: #000;
+        }
+        button.alpha {
+            background: #33ff33;
+            color: #000;
+        }
+        button.red {
+            background: #ff3333;
+        }
+        button.orange {
+            background: #ff9933;
+            color: #000;
+        }
 
-    /* Wide Button for Equals */
-    .wide {
-      grid-column: span 2;
-    }
-  </style>
+        /* Wide Button for Equals */
+        .wide {
+            grid-column: span 2;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
-  <div class="calculator">
-    <!-- Screen -->
-    <div class="screen">
-      <input type="text" id="calc-screen" readonly value="0">
-    </div>
-    <!-- Keys Container -->
-    <div class="keys">
-      <!-- Top Keys Row -->
-      <div class="top-keys">
-        <button id="second-toggle" class="shift">2ndF</button>
-        <button class="alpha">ALPHA</button>
-        <button>MCL</button>
-        <button>RCL</button>
-        <button class="red">ON/C</button>
-        <button class="red">AC</button>
-      </div>
-      <!-- Function Keys Row -->
-      <div class="function-keys">
-        <button>hyp</button>
-        <button class="dual" data-primary="sin" data-secondary="sin⁻¹">sin</button>
-        <button class="dual" data-primary="cos" data-secondary="cos⁻¹">cos</button>
-        <button class="dual" data-primary="tan" data-secondary="tan⁻¹">tan</button>
-        <button>x²</button>
-        <button>x³</button>
-        <button class="dual" data-primary="√" data-secondary="∛">√</button>
-        <button class="dual" data-primary="log" data-secondary="ln">log</button>
-        <button class="dual" data-primary="10^x" data-secondary="e^x">10^x</button>
-        <button class="dual" data-primary="1/x" data-secondary="Ran#">1/x</button>
-      </div>
-      <!-- Bottom Keys: Numpad (left) and Operators (right) -->
-      <div class="bottom-keys">
-        <!-- Number Pad -->
-        <div class="numpad">
-          <button>7</button>
-          <button>8</button>
-          <button>9</button>
-          <button>4</button>
-          <button>5</button>
-          <button>6</button>
-          <button>1</button>
-          <button>2</button>
-          <button>3</button>
-          <button>0</button>
-          <button>00</button>
-          <button>.</button>
+    <div class="calculator">
+        <!-- Screen -->
+        <div class="screen">
+            <input type="text" id="calc-screen" readonly value="0">
         </div>
-        <!-- Operators -->
-        <div class="operators">
-          <button class="operator">+</button>
-          <button class="operator">-</button>
-          <button class="operator">×</button>
-          <button class="operator">÷</button>
-          <button>(</button>
-          <button>)</button>
+        <!-- Keys Container -->
+        <div class="keys">
+            <!-- Top Keys Row -->
+            <div class="top-keys">
+                <button id="second-toggle" class="shift">2ndF</button>
+                <button class="alpha">ALPHA</button>
+                <button>MCL</button>
+                <button>RCL</button>
+                <button class="red">ON/C</button>
+                <button class="red">AC</button>
+            </div>
+            <!-- Function Keys Row -->
+            <div class="function-keys">
+                <button>hyp</button>
+                <button class="dual" data-primary="sin" data-secondary="sin⁻¹">sin</button>
+                <button class="dual" data-primary="cos" data-secondary="cos⁻¹">cos</button>
+                <button class="dual" data-primary="tan" data-secondary="tan⁻¹">tan</button>
+                <button>x²</button>
+                <button>x³</button>
+                <button class="dual" data-primary="√" data-secondary="∛">√</button>
+                <button class="dual" data-primary="log" data-secondary="ln">log</button>
+                <button class="dual" data-primary="10^x" data-secondary="e^x">10^x</button>
+                <button class="dual" data-primary="1/x" data-secondary="Ran#">1/x</button>
+            </div>
+            <!-- Bottom Keys: Numpad (left) and Operators (right) -->
+            <div class="bottom-keys">
+                <!-- Number Pad -->
+                <div class="numpad">
+                    <button>7</button>
+                    <button>8</button>
+                    <button>9</button>
+                    <button>4</button>
+                    <button>5</button>
+                    <button>6</button>
+                    <button>1</button>
+                    <button>2</button>
+                    <button>3</button>
+                    <button>0</button>
+                    <button>00</button>
+                    <button>.</button>
+                </div>
+                <!-- Operators -->
+                <div class="operators">
+                    <button class="operator">+</button>
+                    <button class="operator">-</button>
+                    <button class="operator">×</button>
+                    <button class="operator">÷</button>
+                    <button>(</button>
+                    <button>)</button>
+                </div>
+            </div>
+            <!-- Equals Row -->
+            <div class="equals-row">
+                <button class="equal wide">=</button>
+            </div>
         </div>
-      </div>
-      <!-- Equals Row -->
-      <div class="equals-row">
-        <button class="equal wide">=</button>
-      </div>
     </div>
-  </div>
 </div>
 
 <script>
-  // Toggle flag for 2nd function mode
-  let isSecondFunction = false;
+    // Toggle flag for 2nd function mode
+    let isSecondFunction = false;
 
-  // Update dual-function button labels
-  function updateDualButtons() {
-    document.querySelectorAll('.dual').forEach(button => {
-      button.textContent = isSecondFunction ? button.getAttribute('data-secondary') : button.getAttribute('data-primary');
+    // Update dual-function button labels
+    function updateDualButtons() {
+        document.querySelectorAll('.dual').forEach(button => {
+            button.textContent = isSecondFunction
+                ? button.getAttribute('data-secondary')
+                : button.getAttribute('data-primary');
+        });
+    }
+
+    // Toggle 2ndF mode when the button is clicked
+    document.getElementById('second-toggle').addEventListener('click', () => {
+        isSecondFunction = !isSecondFunction;
+        updateDualButtons();
+        document.getElementById('second-toggle').classList.toggle('active', isSecondFunction);
     });
-  }
 
-  // Toggle 2ndF mode when the button is clicked
-  document.getElementById('second-toggle').addEventListener('click', () => {
-    isSecondFunction = !isSecondFunction;
-    updateDualButtons();
-    document.getElementById('second-toggle').classList.toggle('active', isSecondFunction);
-  });
+    // Get reference to the calculator screen
+    const screen = document.getElementById('calc-screen');
 
-  // Get reference to the calculator screen
-  const screen = document.getElementById('calc-screen');
+    // Add event listeners to all buttons except the 2ndF toggle
+    document.querySelectorAll('.keys button:not(#second-toggle)').forEach(button => {
+        button.addEventListener('click', () => {
+            const value = button.innerText;
 
-  // Add event listeners to all buttons except the 2ndF toggle
-  document.querySelectorAll('.keys button:not(#second-toggle)').forEach(button => {
-    button.addEventListener('click', () => {
-      const value = button.innerText;
+            // Clear the screen if AC or ON/C is pressed
+            if (value === "AC" || value === "ON/C") {
+                screen.value = "";
+                return;
+            }
 
-      // Clear the screen if AC or ON/C is pressed
-      if (value === "AC" || value === "ON/C") {
-        screen.value = "";
-        return;
-      }
+            // Evaluate the expression if "=" is pressed
+            if (value === "=") {
+                try {
+                    // Replace custom operator symbols with valid JavaScript operators
+                    const expression = screen.value
+                        .replace(/×/g, '*')
+                        .replace(/÷/g, '/');
+                    screen.value = eval(expression) || "";
+                } catch (error) {
+                    screen.value = "Error";
+                }
+                return;
+            }
 
-      // Evaluate the expression if "=" is pressed
-      if (value === "=") {
-        try {
-
-          screen.value = eval(screen.value) || "";
-        } catch (error) {
-          screen.value = "Error";
-        }
-        return;
-      }
-
-      // If the current display is "0", replace it; otherwise, append the value
-      if (screen.value === "0") {
-        screen.value = value;
-      } else {
-        screen.value += value;
-      }
+            // If the current display is "0", replace it; otherwise, append the value
+            if (screen.value === "0") {
+                screen.value = value;
+            } else {
+                screen.value += value;
+            }
+        });
     });
-  });
 
-  // Initialize screen value
-  screen.value = "0";
+    // Initialize screen value
+    screen.value = "0";
 </script>
 </body>
 </html>
