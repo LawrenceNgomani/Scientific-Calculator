@@ -226,8 +226,42 @@
     document.getElementById('second-toggle').classList.toggle('active', isSecondFunction);
   });
 
+  // Get reference to the calculator screen
+  const screen = document.getElementById('calc-screen');
+
+  // Add event listeners to all buttons except the 2ndF toggle
+  document.querySelectorAll('.keys button:not(#second-toggle)').forEach(button => {
+    button.addEventListener('click', () => {
+      const value = button.innerText;
+
+      // Clear the screen if AC or ON/C is pressed
+      if (value === "AC" || value === "ON/C") {
+        screen.value = "";
+        return;
+      }
+
+      // Evaluate the expression if "=" is pressed
+      if (value === "=") {
+        try {
+
+          screen.value = eval(screen.value) || "";
+        } catch (error) {
+          screen.value = "Error";
+        }
+        return;
+      }
+
+      // If the current display is "0", replace it; otherwise, append the value
+      if (screen.value === "0") {
+        screen.value = value;
+      } else {
+        screen.value += value;
+      }
+    });
+  });
+
   // Initialize screen value
-  document.getElementById('calc-screen').value = "0";
+  screen.value = "0";
 </script>
 </body>
 </html>
