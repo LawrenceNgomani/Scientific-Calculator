@@ -157,7 +157,8 @@
                 <button class="alpha">ALPHA</button>
                 <button>MCL</button>
                 <button>RCL</button>
-                <button class="red">ON/C</button>
+                <!-- Changed ON/C to Del -->
+                <button class="red">Del</button>
                 <button class="red">AC</button>
             </div>
             <!-- Function Keys Row -->
@@ -228,7 +229,7 @@
         document.getElementById('second-toggle').classList.toggle('active', isSecondFunction);
     });
 
-    // Get reference to the calculator screen
+    // Reference to the calculator screen
     const screen = document.getElementById('calc-screen');
 
     // Add event listeners to all buttons except the 2ndF toggle
@@ -236,33 +237,52 @@
         button.addEventListener('click', () => {
             const value = button.innerText;
 
-            // Clear the screen if AC or ON/C is pressed
-            if (value === "AC" || value === "ON/C") {
+            // Clear the screen if "AC" is pressed.
+            if (value === "AC") {
                 screen.value = "";
                 return;
             }
 
-            // Evaluate the expression if "=" is pressed
-            if (value === "=") {
-                try {
-                    // Replace custom operator symbols with valid JavaScript operators
-                    const expression = screen.value
-                        .replace(/×/g, '*')
-                        .replace(/÷/g, '/');
-                    screen.value = eval(expression) || "";
-                } catch (error) {
-                    screen.value = "Error";
-                }
+            // Delete last character if "Del" is pressed.
+            if (value === "Del") {
+                screen.value = screen.value.length > 1
+                    ? screen.value.slice(0, -1)
+                    : "0";
                 return;
             }
 
-            // If the current display is "0", replace it; otherwise, append the value
+            // For all other buttons, if the current display is "0", replace it; otherwise, append the value.
             if (screen.value === "0") {
                 screen.value = value;
             } else {
                 screen.value += value;
             }
         });
+    });
+
+    // Evaluate the full expression when "=" is pressed.
+    // This converts the displayed tokens into valid JavaScript before evaluation.
+    document.querySelector('.equal').addEventListener('click', () => {
+        try {
+            let expression = screen.value
+                .replace(/×/g, '*')
+                .replace(/÷/g, '/')
+                // Handle exponentiation: convert "x²" and "x³" when attached to a number.
+                .replace(/(\d+(\.\d+)?)x²/g, '($1**2)')
+                .replace(/(\d+(\.\d+)?)x³/g, '($1**3)')
+                // Convert square root and cube root notations.
+                .replace(/√(\d+(\.\d+)?)/g, 'Math.sqrt($1)')
+                .replace(/∛(\d+(\.\d+)?)/g, 'Math.cbrt($1)')
+                // Convert logarithms: "log" for base 10 and "ln" for natural logarithm.
+                .replace(/log(\d+(\.\d+)?)/g, 'Math.log10($1)')
+                // Insert multiplication operator if a digit immediately precedes a log function.
+                .replace(/(\d)(Math\.log10\()/g, '$1*$2')
+                .replace(/ln(\d+(\.\d+)?)/g, 'Math.log($1)')
+                .replace(/(\d)(Math\.log\()/g, '$1*$2');
+            screen.value = eval(expression) || "";
+        } catch (error) {
+            screen.value = "Error";
+        }
     });
 
     // Initialize screen value
