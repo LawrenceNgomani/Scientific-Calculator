@@ -4,6 +4,18 @@
     <meta charset="UTF-8">
     <title>Ngomani's Scientific Calculator</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Enable horizontal scrolling on the screen container */
+        .screen {
+            overflow-x: auto;
+        }
+        /* Make the calculator screen's input wide and nowrap */
+        #calc-screen {
+            width: 100%;
+            white-space: nowrap;
+            box-sizing: border-box;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -63,8 +75,9 @@
                     <tr>
                         <td><button>0</button></td>
                         <td><button>00</button></td>
-                        <td><button>.</button></td>
-                        <td colspan="2"></td>
+                        <td><button id="dot-btn">.</button></td>
+                        <td><button id="ans-btn">ANS</button></td>
+                        <td><button id="xpowery-btn">x^y</button></td>
                     </tr>
                 </table>
             </div>
@@ -75,5 +88,83 @@
         </div>
     </div>
 </div>
+
+<!-- JavaScript for handling input, evaluation, scrolling, and 2ndF toggling -->
+<script>
+    // Global variable to store the last computed answer.
+    let lastAns = "";
+    let isSecondFunction = false; // flag for dual button toggle
+
+    // Function to update horizontal scroll of the screen
+    function updateScroll() {
+        const screenElem = document.getElementById('calc-screen');
+        screenElem.scrollLeft = screenElem.scrollWidth;
+    }
+
+    // Toggle 2nd function on dual keys when 2ndF is pressed.
+    document.getElementById("second-toggle").addEventListener("click", function(){
+        isSecondFunction = !isSecondFunction;
+        document.querySelectorAll(".dual").forEach(function(btn) {
+            btn.innerText = isSecondFunction ? btn.getAttribute("data-secondary") : btn.getAttribute("data-primary");
+        });
+    });
+
+    // Add event listeners to all buttons (except the equal button)
+    document.querySelectorAll('.keys button:not(.equal)').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const btnText = this.innerText;
+            const screen = document.getElementById('calc-screen');
+
+            if (btnText === "AC") {
+                screen.value = "0";
+            } else if (btnText === "Del") {
+                // Remove the last character
+                if(screen.value.length > 0) {
+                    screen.value = screen.value.slice(0, -1);
+                }
+                if(screen.value === "") screen.value = "0";
+            } else if (btnText === "ANS") {
+                // Insert the last computed answer (if available)
+                if(lastAns !== "") {
+                    screen.value += lastAns;
+                }
+            } else {
+                // Replace "0" with empty string before appending new input
+                if(screen.value === "0") {
+                    screen.value = "";
+                }
+                screen.value += btnText;
+            }
+            updateScroll();
+        });
+    });
+
+    // Evaluate the expression when the equal button is clicked.
+    document.querySelector('.equal').addEventListener('click', function() {
+        const screen = document.getElementById('calc-screen');
+        let expression = screen.value;
+
+        // Replace calculator symbols with valid JavaScript operators:
+        expression = expression.replace(/×/g, '*')
+            .replace(/÷/g, '/')
+            .replace(/x\^y/g, '**');
+
+        try {
+            const result = eval(expression);
+            // Check for invalid results (e.g., division by zero).
+            if (!isFinite(result)) {
+                screen.value = "Error";
+                lastAns = "";
+            } else {
+                screen.value = result;
+                lastAns = result;
+            }
+        } catch(e) {
+            screen.value = "Error";
+            lastAns = "";
+        }
+        updateScroll();
+    });
+</script>
 </body>
 </html>
