@@ -21,7 +21,8 @@
     background: #3a4452;
     padding: 20px;
     border-radius: 10px;
-    width: 600px;  /* Increased width */
+    /* Adjust this width to whatever you want */
+    width: 450px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -46,12 +47,39 @@
     box-shadow: none;
 }
 
-/* Keys Grid */
+/* The main container for all keys (top, function, bottom, equals) */
 .keys {
+    display: flex;
+    flex-direction: column;
     width: 100%;
+    gap: 10px;
+}
+
+/* 1) Top Keys: 6 columns side by side */
+.top-keys {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-gap: 4px; /* Reduced gap to make buttons closer together */
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
+}
+
+/* 2) Function Keys: 10 columns side by side */
+.function-keys {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+}
+
+/* 3) Bottom Keys: 6 columns × 3 rows = 18 buttons */
+.bottom-keys {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
+}
+
+/* 4) Equals row: single button that can span or just stay wide */
+.equals-row {
+    display: flex;
+    justify-content: center;
 }
 
 /* Button Styling */
@@ -97,7 +125,7 @@
     color: #000;
 }
 
-/* Wide Button */
+/* Make '=' stretch the full row if you want */
 .keys button.wide {
-    grid-column: span 2;
+    width: 100%;
 }
