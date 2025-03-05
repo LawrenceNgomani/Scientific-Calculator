@@ -12,11 +12,10 @@
         <div class="screen">
             <input type="text" id="calc-screen" readonly value="0">
         </div>
-
         <!-- Keys Container -->
         <div class="keys">
-            <!-- 1) Top Keys Row (6 buttons) -->
-            <div class="top-keys">
+            <!-- Top Keys Row -->
+            <div class="row top-keys">
                 <button id="second-toggle" class="shift">2ndF</button>
                 <button class="alpha">ALPHA</button>
                 <button>MCL</button>
@@ -24,9 +23,8 @@
                 <button class="red">Del</button>
                 <button class="red">AC</button>
             </div>
-
-            <!-- 2) Function Keys Row (10 buttons) -->
-            <div class="function-keys">
+            <!-- Function Keys Row -->
+            <div class="row function-keys">
                 <button>hyp</button>
                 <button class="dual" data-primary="sin" data-secondary="sin⁻¹">sin</button>
                 <button class="dual" data-primary="cos" data-secondary="cos⁻¹">cos</button>
@@ -38,23 +36,20 @@
                 <button class="dual" data-primary="10^x" data-secondary="e^x">10^x</button>
                 <button class="dual" data-primary="1/x" data-secondary="Ran#">1/x</button>
             </div>
-
-            <!-- 3) Bottom Keys (digits + operators) in a single grid of 6 columns × 3 rows = 18 buttons -->
-            <div class="bottom-keys">
+            <!-- Bottom Keys Row (Numpad & Operators) -->
+            <div class="row bottom-keys">
                 <button>7</button>
                 <button>8</button>
                 <button>9</button>
                 <button>4</button>
                 <button>5</button>
                 <button>6</button>
-
                 <button>1</button>
                 <button>2</button>
                 <button>3</button>
                 <button>0</button>
                 <button>00</button>
                 <button>.</button>
-
                 <button class="operator">+</button>
                 <button class="operator">-</button>
                 <button class="operator">×</button>
@@ -62,9 +57,8 @@
                 <button>(</button>
                 <button>)</button>
             </div>
-
-            <!-- 4) Equals Row (1 button, can stretch if you like) -->
-            <div class="equals-row">
+            <!-- Equals Row -->
+            <div class="row equals-row">
                 <button class="equal wide">=</button>
             </div>
         </div>
