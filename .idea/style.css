@@ -94,9 +94,24 @@
     cursor: pointer;
 }
 
-/* You can add special styles for specific buttons if needed.
-   For example, if you want operator buttons to have a different text color:
-*/
+/* Specific Button Styles */
+/* AC and Del buttons in red font */
+.keys button.red {
+    color: red;
+}
+
+/* Alpha button with green background and black font */
+.keys button.alpha {
+    color: limegreen;
+}
+
+/* 2ndF button with orange background and black font */
+.keys button.shift {
+    background: orange;
+    color: black;
+}
+
+/* Operator buttons with specific text color */
 .keys button.operator {
     color: #33ffd8;
 }
