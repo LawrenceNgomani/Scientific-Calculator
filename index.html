@@ -94,6 +94,7 @@
     // Global variable to store the last computed answer.
     let lastAns = "";
     let isSecondFunction = false; // flag for dual button toggle
+    let evaluated = false; // flag to indicate if the last action was an evaluation
 
     // Function to update horizontal scroll of the screen.
     function updateScroll() {
@@ -120,6 +121,14 @@
             }
             const btnText = this.innerText;
             const screen = document.getElementById('calc-screen');
+
+            // If last action was an evaluation and a number (or dot) is pressed, clear the screen.
+            if(evaluated && /^[0-9.]$/.test(btnText)) {
+                screen.value = "";
+                evaluated = false;
+            } else {
+                evaluated = false;
+            }
 
             if (btnText === "AC") {
                 screen.value = "0";
@@ -196,6 +205,7 @@
             screen.value = "Error";
             lastAns = "";
         }
+        evaluated = true; // mark that evaluation just occurred
         updateScroll();
     });
 </script>
