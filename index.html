@@ -96,10 +96,14 @@
     let isSecondFunction = false; // flag for dual button toggle
     let evaluated = false; // flag to indicate if the last action was an evaluation
 
-    // New globals for square root mode:
+    // Globals for square root mode:
     let sqrtMode = false;      // true if entering a square/cube root radicand
     let sqrtRadicand = "";     // stores the current radicand
     let currentRoot = "";      // will be "√" for square root or "∛" for cube root
+
+    // New globals for exponent mode:
+    let expMode = false;       // true if entering an exponent after x^y
+    let expExponent = "";      // stores the exponent digits
 
     // Function to update horizontal scroll of the screen.
     function updateScroll() {
@@ -123,7 +127,6 @@
         document.querySelectorAll(".dual").forEach(function(btn) {
             btn.innerText = isSecondFunction ? btn.getAttribute("data-secondary") : btn.getAttribute("data-primary");
         });
-        // Prevent the "2ndF" button from adding its text to the screen.
         e.stopPropagation();
     });
 
@@ -138,12 +141,9 @@
             if(evaluated && /^[0-9.]$/.test(btnText)) {
                 screen.value = "";
                 evaluated = false;
-                // Also cancel any active sqrt mode.
-                if(sqrtMode) {
-                    sqrtMode = false;
-                    sqrtRadicand = "";
-                    currentRoot = "";
-                }
+                // Also cancel any active sqrt or exponent mode.
+                if(sqrtMode) { sqrtMode = false; sqrtRadicand = ""; currentRoot = ""; }
+                if(expMode) { expMode = false; expExponent = ""; }
             } else {
                 evaluated = false;
             }
@@ -151,7 +151,6 @@
             // If square root mode is active and a digit/dot is pressed, update the radicand.
             if(sqrtMode && /^[0-9.]$/.test(btnText)) {
                 sqrtRadicand += btnText;
-                // Update display: find the last occurrence of the current root symbol and replace what follows.
                 let idx = screen.value.lastIndexOf(currentRoot);
                 if(idx !== -1) {
                     screen.value = screen.value.slice(0, idx + currentRoot.length) + addOverline(sqrtRadicand);
@@ -161,18 +160,33 @@
                 updateScroll();
                 return;
             }
-
             // If square root mode is active and a non-digit is pressed, close the sqrt expression.
             if(sqrtMode && !/^[0-9.]$/.test(btnText)) {
                 screen.value += ")";
                 sqrtMode = false;
-                // Continue processing the current button normally.
+            }
+
+            // If exponent mode is active and a digit/dot is pressed, update the exponent.
+            if(expMode && /^[0-9.]$/.test(btnText)) {
+                expExponent += btnText;
+                let idx = screen.value.lastIndexOf("^-");
+                if(idx !== -1) {
+                    screen.value = screen.value.slice(0, idx) + "^-" + expExponent;
+                } else {
+                    screen.value += "^-" + expExponent;
+                }
+                updateScroll();
+                return;
+            }
+            // If exponent mode is active and a non-digit is pressed, close exponent mode.
+            if(expMode && !/^[0-9.]$/.test(btnText)) {
+                if(expExponent === "") expExponent = "0";
+                expMode = false;
             }
 
             if (btnText === "AC") {
                 screen.value = "0";
             } else if (btnText === "Del") {
-                // Remove the last character.
                 if(screen.value.length > 0) {
                     screen.value = screen.value.slice(0, -1);
                 }
@@ -180,17 +194,10 @@
             } else if (btnText === "ANS") {
                 if(lastAns !== "") {
                     let formattedAns = String(lastAns).replace(/^0+/, '');
-                    if(formattedAns === "") {
-                        formattedAns = "0";
-                    }
-                    if(screen.value === formattedAns) {
-                        screen.value = "0";
-                    } else {
-                        screen.value = formattedAns;
-                    }
+                    if(formattedAns === "") { formattedAns = "0"; }
+                    screen.value = formattedAns;
                 }
             } else if (btnText === "x²") {
-                // Find the last number in the screen and append the superscript ² to it.
                 let currentVal = screen.value;
                 let regex = /(\d+(\.\d+)?)(?!.*\d)/;
                 let match = currentVal.match(regex);
@@ -199,7 +206,6 @@
                     screen.value = currentVal.slice(0, match.index) + numberStr + "²";
                 }
             } else if (btnText === "x³") {
-                // Find the last number in the screen and append the superscript ³ to it.
                 let currentVal = screen.value;
                 let regex = /(\d+(\.\d+)?)(?!.*\d)/;
                 let match = currentVal.match(regex);
@@ -207,21 +213,36 @@
                     let numberStr = match[0];
                     screen.value = currentVal.slice(0, match.index) + numberStr + "³";
                 }
+            } else if (btnText === "x^y") {
+                // Start exponent mode.
+                if(screen.value === "0") { screen.value = ""; }
+                expMode = true;
+                expExponent = "";
+                // Append the exponent template: a caret and a dash ("^-")
+                screen.value += "^-";
+                updateScroll();
+                return;
             } else if (btnText === "√" || btnText === "∛") {
-                // When the square root (or cube root) button is pressed, start sqrt mode.
-                if(screen.value === "0") {
-                    screen.value = "";
-                }
+                if(screen.value === "0") { screen.value = ""; }
                 sqrtMode = true;
                 sqrtRadicand = "";
-                currentRoot = btnText; // will be "√" for square root or "∛" for cube root
-                // Insert the root symbol (without a parenthesis) into the expression.
+                currentRoot = btnText; // "√" or "∛"
                 screen.value += currentRoot;
-            } else {
-                // For all other keys, if the current display is "0", clear it first.
-                if(screen.value === "0") {
-                    screen.value = "";
+            } else if (btnText === "sin" || btnText === "sin⁻¹") {
+                if(screen.value === "0") { screen.value = ""; }
+                if(btnText === "sin") {
+                    screen.value += "sin(";
+                } else {
+                    screen.value += "asin(";
                 }
+            } else if (btnText === "cos") {
+                if(screen.value === "0") { screen.value = ""; }
+                screen.value += "cos(";
+            } else if (btnText === "tan") {
+                if(screen.value === "0") { screen.value = ""; }
+                screen.value += "tan(";
+            } else {
+                if(screen.value === "0") { screen.value = ""; }
                 screen.value += btnText;
             }
             updateScroll();
@@ -232,18 +253,29 @@
     document.querySelector('.equal').addEventListener('click', function() {
         const screen = document.getElementById('calc-screen');
         let expression = screen.value;
-        // In case a sqrt expression was left open, close it.
         if(sqrtMode) {
             expression += ")";
             sqrtMode = false;
         }
-        // Replace our square root/cube root notation with proper Math.sqrt/Math.cbrt calls.
-        // The pattern is: (√|∛) followed by one or more characters (which include combining overline) until a ")"
+        if(expMode) {
+            if(expExponent === "") expExponent = "0";
+            expMode = false;
+        }
+        // Replace our sqrt/∛ notation with Math.sqrt/Math.cbrt calls.
         expression = expression.replace(/(√|∛)([0-9\u0305\.]+)\)/g, function(match, rootSymbol, radicand) {
             let plainRadicand = radicand.replace(/\u0305/g, "");
             return (rootSymbol === "√" ? "Math.sqrt(" : "Math.cbrt(") + plainRadicand + ")";
         });
-        // Replace other calculator symbols with valid JavaScript operators.
+        // Replace exponent mode markers: replace "^-<exponent>" with "**<exponent>"
+        expression = expression.replace(/\^\-([0-9\.]+)/g, function(match, expVal) {
+            return "**" + expVal;
+        });
+        // Replace trigonometric functions with Math. functions.
+        expression = expression.replace(/asin\(/g, "Math.asin(")
+            .replace(/sin\(/g, "Math.sin(")
+            .replace(/cos\(/g, "Math.cos(")
+            .replace(/tan\(/g, "Math.tan(");
+        // Replace other symbols.
         expression = expression.replace(/×/g, '*')
             .replace(/÷/g, '/')
             .replace(/x\^y/g, '**')
