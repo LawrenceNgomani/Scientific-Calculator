@@ -313,6 +313,12 @@
             baseExp = "";
             expExponent = "";
         }
+        // Auto-balance missing closing parentheses (so "sin(100" becomes "sin(100)").
+        let openParenCount = (expression.match(/\(/g) || []).length;
+        let closeParenCount = (expression.match(/\)/g) || []).length;
+        if (openParenCount > closeParenCount) {
+            expression += ")".repeat(openParenCount - closeParenCount);
+        }
         // Replace our sqrt/∛ notation with Math.sqrt/Math.cbrt calls.
         expression = expression.replace(/(√|∛)([0-9\u0305\.]+)\)/g, function(match, rootSymbol, radicand) {
             let plainRadicand = radicand.replace(/\u0305/g, "");
