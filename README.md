@@ -27,8 +27,7 @@
 **Live Demo & Installation**
 💻 Try it live: GitHub Pages (if hosted)
 
-📥 Clone & Run: git clone https://github.com/yourgithubusername/Scientific-Calculator.git  
-cd Scientific-Calculator  
+📥 Clone & Run: https://github.com/LawrenceNgomani/Scientific-Calculator.git 
 - open index.html
   
 **Contributing**
