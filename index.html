@@ -93,22 +93,17 @@
 <script>
     // Global variables
     let lastAns = "";
-    let isSecondFunction = false; // flag for dual button toggle
-    let evaluated = false; // indicates if the last action was an evaluation
+    let isSecondFunction = false;
+    let evaluated = false;
 
-    // Globals for square root mode:
-    let sqrtMode = false;      // true if entering a square/cube root radicand
-    let sqrtRadicand = "";     // stores the current radicand
-    let currentRoot = "";      // will be "√" for square root or "∛" for cube root
+    let sqrtMode = false;
+    let sqrtRadicand = "";
+    let currentRoot = "";
 
-    // Globals for exponent mode:
-    let expMode = false;       // true if entering an exponent after x^y
-    let expExponent = "";      // stores the exponent digits
-    let baseExp = "";          // stores the base number for exponentiation
-    let expCursorVisible = false; // for blinking cursor
-    let expCursorInterval;       // timer for blinking
+    let expMode = false;
+    let expExponent = "";
+    let baseExp = "";
 
-    // Helper: mapping for superscript conversion.
     const supMap = {
         "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴",
         "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹", ".": "."
@@ -118,46 +113,19 @@
     }
     function fromSuperscript(str) {
         const revMap = {"⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4",
-            "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", ".": "."};
+            "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9"};
         return str.split('').map(c => revMap[c] || c).join('');
     }
 
-    // Helper for square root mode:
-    function addOverline(str) {
-        return str.split('').map(c => c + "\u0305").join('');
-    }
-    function removeOverline(str) {
-        return str.replace(/\u0305/g, "");
-    }
-
-    // Update horizontal scroll.
     function updateScroll() {
         const screenElem = document.getElementById('calc-screen');
         screenElem.scrollLeft = screenElem.scrollWidth;
     }
 
-    // Exponent blinking cursor functions.
-    function startExpCursor() {
-        expCursorVisible = true;
-        expCursorInterval = setInterval(toggleExpCursor, 500);
-    }
-    function toggleExpCursor() {
-        expCursorVisible = !expCursorVisible;
-        updateExpDisplay();
-    }
-    function stopExpCursor() {
-        clearInterval(expCursorInterval);
-        expCursorVisible = false;
-        updateExpDisplay();
-    }
-    function updateExpDisplay() {
-        const screen = document.getElementById('calc-screen');
-        // Build display: baseExp followed by raised exponent and if cursor is active, a blinking underscore.
-        let cursor = expCursorVisible ? toSuperscript("_") : "";
-        screen.value = baseExp + toSuperscript(expExponent) + cursor;
+    function addOverline(str) {
+        return str.split('').map(c => c + "\u0305").join('');
     }
 
-    // Toggle 2nd function.
     document.getElementById("second-toggle").addEventListener("click", function(e){
         isSecondFunction = !isSecondFunction;
         document.querySelectorAll(".dual").forEach(function(btn) {
@@ -166,37 +134,36 @@
         e.stopPropagation();
     });
 
-    // Main button event listeners.
     document.querySelectorAll('.keys button:not(.equal)').forEach(function(button) {
         button.addEventListener('click', function(e) {
             if(this.id === "second-toggle") return;
             const btnText = this.innerText;
             const screen = document.getElementById('calc-screen');
 
-            // If evaluation just occurred and a digit/dot is pressed, clear the screen.
             if(evaluated && /^[0-9.]$/.test(btnText)) {
                 screen.value = "";
                 evaluated = false;
                 if(sqrtMode) { sqrtMode = false; sqrtRadicand = ""; currentRoot = ""; }
-                if(expMode) { stopExpCursor(); expMode = false; expExponent = ""; baseExp = ""; }
+                if(expMode) { expMode = false; expExponent = ""; baseExp = ""; }
             } else {
                 evaluated = false;
             }
 
-            // Exponent mode: if active and digit/dot is pressed, update exponent.
             if(expMode && /^[0-9.]$/.test(btnText)) {
                 expExponent += btnText;
-                updateExpDisplay();
+                let idx = screen.value.lastIndexOf(baseExp);
+                if(idx !== -1) {
+                    screen.value = screen.value.slice(0, idx + baseExp.length) + toSuperscript(expExponent);
+                } else {
+                    screen.value += toSuperscript(expExponent);
+                }
                 updateScroll();
                 return;
             }
-            // If exponent mode active and non-digit is pressed, close exponent mode.
             if(expMode && !/^[0-9.]$/.test(btnText)) {
-                stopExpCursor();
                 expMode = false;
             }
 
-            // Square root mode: if active and digit/dot is pressed, update radicand.
             if(sqrtMode && /^[0-9.]$/.test(btnText)) {
                 sqrtRadicand += btnText;
                 let idx = screen.value.lastIndexOf(currentRoot);
@@ -226,7 +193,8 @@
                     if(formattedAns === "") { formattedAns = "0"; }
                     screen.value = formattedAns;
                 }
-            } else if (btnText === "sin" || btnText === "sin⁻¹") {
+            }
+            else if (btnText === "sin" || btnText === "sin⁻¹") {
                 if(screen.value === "0") { screen.value = ""; }
                 screen.value += (btnText === "sin" ? "sin(" : "asin(");
             } else if (btnText === "cos") {
@@ -235,7 +203,8 @@
             } else if (btnText === "tan") {
                 if(screen.value === "0") { screen.value = ""; }
                 screen.value += "tan(";
-            } else if (btnText === "x²") {
+            }
+            else if (btnText === "x²") {
                 let currentVal = screen.value;
                 let regex = /(\d+(\.\d+)?)(?!.*\d)/;
                 let match = currentVal.match(regex);
@@ -252,16 +221,7 @@
                     screen.value = currentVal.slice(0, match.index) + numberStr + "³";
                 }
             }
-            // x^y branch.
             else if (btnText === "x^y") {
-                // If already in exponent mode, finalize the exponent input.
-                if(expMode) {
-                    stopExpCursor();
-                    expMode = false;
-                    // The raised exponent remains; subsequent keys will be appended at the baseline.
-                    return;
-                }
-                // Otherwise, begin exponent mode:
                 let currentVal = screen.value;
                 let regex = /(\d+(\.\d+)?)(?!.*\d)/;
                 let match = currentVal.match(regex);
@@ -273,9 +233,7 @@
                 }
                 expMode = true;
                 expExponent = "";
-                // Append the base with a blinking superscript cursor (underscore).
-                screen.value += baseExp + toSuperscript("_");
-                startExpCursor();
+                screen.value += baseExp;
                 updateScroll();
                 return;
             }
@@ -294,7 +252,6 @@
         });
     });
 
-    // Evaluate the expression.
     document.querySelector('.equal').addEventListener('click', function() {
         const screen = document.getElementById('calc-screen');
         let expression = screen.value;
@@ -303,38 +260,30 @@
             sqrtMode = false;
         }
         if(expMode) {
-            stopExpCursor();
-            // Replace the raised exponent (superscript digits) at the end with "**" operator.
-            expression = expression.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹\.]+$/, function(match) {
-                let normalExp = fromSuperscript(match);
-                return "**" + normalExp;
-            });
+            let raised = toSuperscript(expExponent);
+            if(expression.endsWith(raised)) {
+                expression = expression.slice(0, -raised.length) + "**" + expExponent;
+            }
             expMode = false;
             baseExp = "";
             expExponent = "";
         }
-        // Auto-balance missing closing parentheses (so "sin(100" becomes "sin(100)").
-        let openParenCount = (expression.match(/\(/g) || []).length;
-        let closeParenCount = (expression.match(/\)/g) || []).length;
-        if (openParenCount > closeParenCount) {
-            expression += ")".repeat(openParenCount - closeParenCount);
-        }
-        // Replace our sqrt/∛ notation with Math.sqrt/Math.cbrt calls.
         expression = expression.replace(/(√|∛)([0-9\u0305\.]+)\)/g, function(match, rootSymbol, radicand) {
             let plainRadicand = radicand.replace(/\u0305/g, "");
             return (rootSymbol === "√" ? "Math.sqrt(" : "Math.cbrt(") + plainRadicand + ")";
         });
-        // Replace trig functions with Math. functions.
         expression = expression.replace(/asin\(/g, "Math.asin(")
             .replace(/sin\(/g, "Math.sin(")
             .replace(/cos\(/g, "Math.cos(")
             .replace(/tan\(/g, "Math.tan(");
-        // Replace other symbols.
         expression = expression.replace(/×/g, '*')
             .replace(/÷/g, '/')
             .replace(/x\^y/g, '**')
             .replace(/²/g, "**2")
             .replace(/³/g, "**3");
+        // Instead of throwing an error when a digit is followed by a parenthesis,
+        // insert an explicit multiplication operator.
+        expression = expression.replace(/(\d)\s*\(/g, '$1*(');
         try {
             const result = eval(expression);
             if (!isFinite(result)) {
