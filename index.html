@@ -91,15 +91,30 @@
 
 <!-- JavaScript for handling input, evaluation, scrolling, and 2ndF toggling -->
 <script>
-    // Global variable to store the last computed answer.
+    // Global variables
     let lastAns = "";
     let isSecondFunction = false; // flag for dual button toggle
     let evaluated = false; // flag to indicate if the last action was an evaluation
+
+    // New globals for square root mode:
+    let sqrtMode = false;      // true if entering a square/cube root radicand
+    let sqrtRadicand = "";     // stores the current radicand
+    let currentRoot = "";      // will be "√" for square root or "∛" for cube root
 
     // Function to update horizontal scroll of the screen.
     function updateScroll() {
         const screenElem = document.getElementById('calc-screen');
         screenElem.scrollLeft = screenElem.scrollWidth;
+    }
+
+    // Helper: add a combining overline (U+0305) after each character to simulate a roof.
+    function addOverline(str) {
+        return str.split('').map(c => c + "\u0305").join('');
+    }
+
+    // Helper: remove combining overline characters.
+    function removeOverline(str) {
+        return str.replace(/\u0305/g, "");
     }
 
     // Toggle 2nd function on dual keys when 2ndF is pressed.
@@ -115,19 +130,43 @@
     // Add event listeners to all buttons (except the equal button and the 2ndF toggle).
     document.querySelectorAll('.keys button:not(.equal)').forEach(function(button) {
         button.addEventListener('click', function(e) {
-            // If this is the 2ndF button, do nothing further.
-            if(this.id === "second-toggle") {
-                return;
-            }
+            if(this.id === "second-toggle") return;
             const btnText = this.innerText;
             const screen = document.getElementById('calc-screen');
 
-            // If last action was an evaluation and a number (or dot) is pressed, clear the screen.
+            // If an evaluation just occurred and a number (or dot) is pressed, clear the screen.
             if(evaluated && /^[0-9.]$/.test(btnText)) {
                 screen.value = "";
                 evaluated = false;
+                // Also cancel any active sqrt mode.
+                if(sqrtMode) {
+                    sqrtMode = false;
+                    sqrtRadicand = "";
+                    currentRoot = "";
+                }
             } else {
                 evaluated = false;
+            }
+
+            // If square root mode is active and a digit/dot is pressed, update the radicand.
+            if(sqrtMode && /^[0-9.]$/.test(btnText)) {
+                sqrtRadicand += btnText;
+                // Update display: find the last occurrence of the current root symbol and replace what follows.
+                let idx = screen.value.lastIndexOf(currentRoot);
+                if(idx !== -1) {
+                    screen.value = screen.value.slice(0, idx + currentRoot.length) + addOverline(sqrtRadicand);
+                } else {
+                    screen.value += addOverline(sqrtRadicand);
+                }
+                updateScroll();
+                return;
+            }
+
+            // If square root mode is active and a non-digit is pressed, close the sqrt expression.
+            if(sqrtMode && !/^[0-9.]$/.test(btnText)) {
+                screen.value += ")";
+                sqrtMode = false;
+                // Continue processing the current button normally.
             }
 
             if (btnText === "AC") {
@@ -152,24 +191,34 @@
                 }
             } else if (btnText === "x²") {
                 // Find the last number in the screen and append the superscript ² to it.
-                let current = screen.value;
+                let currentVal = screen.value;
                 let regex = /(\d+(\.\d+)?)(?!.*\d)/;
-                let match = current.match(regex);
+                let match = currentVal.match(regex);
                 if(match) {
                     let numberStr = match[0];
-                    screen.value = current.slice(0, match.index) + numberStr + "²";
+                    screen.value = currentVal.slice(0, match.index) + numberStr + "²";
                 }
             } else if (btnText === "x³") {
                 // Find the last number in the screen and append the superscript ³ to it.
-                let current = screen.value;
+                let currentVal = screen.value;
                 let regex = /(\d+(\.\d+)?)(?!.*\d)/;
-                let match = current.match(regex);
+                let match = currentVal.match(regex);
                 if(match) {
                     let numberStr = match[0];
-                    screen.value = current.slice(0, match.index) + numberStr + "³";
+                    screen.value = currentVal.slice(0, match.index) + numberStr + "³";
                 }
+            } else if (btnText === "√" || btnText === "∛") {
+                // When the square root (or cube root) button is pressed, start sqrt mode.
+                if(screen.value === "0") {
+                    screen.value = "";
+                }
+                sqrtMode = true;
+                sqrtRadicand = "";
+                currentRoot = btnText; // will be "√" for square root or "∛" for cube root
+                // Insert the root symbol (without a parenthesis) into the expression.
+                screen.value += currentRoot;
             } else {
-                // Replace "0" with an empty string before appending new input.
+                // For all other keys, if the current display is "0", clear it first.
                 if(screen.value === "0") {
                     screen.value = "";
                 }
@@ -183,8 +232,18 @@
     document.querySelector('.equal').addEventListener('click', function() {
         const screen = document.getElementById('calc-screen');
         let expression = screen.value;
-
-        // Replace calculator symbols with valid JavaScript operators.
+        // In case a sqrt expression was left open, close it.
+        if(sqrtMode) {
+            expression += ")";
+            sqrtMode = false;
+        }
+        // Replace our square root/cube root notation with proper Math.sqrt/Math.cbrt calls.
+        // The pattern is: (√|∛) followed by one or more characters (which include combining overline) until a ")"
+        expression = expression.replace(/(√|∛)([0-9\u0305\.]+)\)/g, function(match, rootSymbol, radicand) {
+            let plainRadicand = radicand.replace(/\u0305/g, "");
+            return (rootSymbol === "√" ? "Math.sqrt(" : "Math.cbrt(") + plainRadicand + ")";
+        });
+        // Replace other calculator symbols with valid JavaScript operators.
         expression = expression.replace(/×/g, '*')
             .replace(/÷/g, '/')
             .replace(/x\^y/g, '**')
@@ -193,7 +252,6 @@
 
         try {
             const result = eval(expression);
-            // Check for invalid results (e.g., division by zero).
             if (!isFinite(result)) {
                 screen.value = "Error";
                 lastAns = "";
@@ -205,7 +263,7 @@
             screen.value = "Error";
             lastAns = "";
         }
-        evaluated = true; // mark that evaluation just occurred
+        evaluated = true;
         updateScroll();
     });
 </script>
