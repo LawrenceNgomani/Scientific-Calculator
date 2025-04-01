@@ -38,7 +38,6 @@
             <!-- Function Keys Row -->
             <div class="row function-keys">
                 <button>hyp</button>
-                <!-- Updated sin button: supports both sin and sin⁻¹ -->
                 <button class="dual" data-primary="sin" data-secondary="sin⁻¹">sin</button>
                 <button class="dual" data-primary="cos" data-secondary="cos⁻¹">cos</button>
                 <button class="dual" data-primary="tan" data-secondary="tan⁻¹">tan</button>
@@ -107,23 +106,27 @@
         "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴",
         "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹", ".": "."
     };
+
     function toSuperscript(str) {
         return str.split('').map(c => supMap[c] || c).join('');
     }
+
     function fromSuperscript(str) {
         const revMap = {"⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4",
             "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9"};
         return str.split('').map(c => revMap[c] || c).join('');
     }
+
     function updateScroll() {
         const screenElem = document.getElementById('calc-screen');
         screenElem.scrollLeft = screenElem.scrollWidth;
     }
+
     function addOverline(str) {
         return str.split('').map(c => c + "\u0305").join('');
     }
 
-    // 2ndF toggle remains unchanged.
+    // 2ndF toggle functionality.
     document.getElementById("second-toggle").addEventListener("click", function(e){
         isSecondFunction = !isSecondFunction;
         document.querySelectorAll(".dual").forEach(function(btn) {
@@ -132,7 +135,7 @@
         e.stopPropagation();
     });
 
-    // ALPHA button handling remains as before.
+    // ALPHA button handling: prompts for variable/letter input.
     document.querySelectorAll('.keys button:not(.equal)').forEach(function(button) {
         button.addEventListener('click', function(e) {
             const screen = document.getElementById('calc-screen');
@@ -202,7 +205,6 @@
                     screen.value = formattedAns;
                 }
             }
-            // Updated sin button handling: supports both sin and sin⁻¹.
             else if (btnText === "sin" || btnText === "sin⁻¹") {
                 if(screen.value === "0") { screen.value = ""; }
                 screen.value += (btnText === "sin" ? "sin(" : "asin(");
@@ -263,10 +265,12 @@
         });
     });
 
-    // Equals button event listener with updated evaluation for sin functions.
+    // Equals button event listener: auto-closes any unmatched parentheses.
     document.querySelector('.equal').addEventListener('click', function() {
         const screen = document.getElementById('calc-screen');
         let expression = screen.value;
+
+        // Close sqrt mode parenthesis if needed.
         if(sqrtMode) {
             expression += ")";
             sqrtMode = false;
@@ -280,22 +284,38 @@
             baseExp = "";
             expExponent = "";
         }
+
+        // Replace custom syntax for square and cube roots.
         expression = expression.replace(/(√|∛)([0-9\u0305\.]+)\)/g, function(match, rootSymbol, radicand) {
             let plainRadicand = radicand.replace(/\u0305/g, "");
             return (rootSymbol === "√" ? "Math.sqrt(" : "Math.cbrt(") + plainRadicand + ")";
         });
+
+        // Replace trigonometric functions with Math functions.
         expression = expression.replace(/asin\(/g, "Math.asin(")
             .replace(/sin\(/g, "Math.sin(")
             .replace(/acos\(/g, "Math.acos(")
             .replace(/cos\(/g, "Math.cos(")
             .replace(/atan\(/g, "Math.atan(")
             .replace(/tan\(/g, "Math.tan(");
+
+        // Replace operator symbols.
         expression = expression.replace(/×/g, '*')
             .replace(/÷/g, '/')
             .replace(/x\^y/g, '**')
             .replace(/²/g, "**2")
             .replace(/³/g, "**3");
+
+        // Insert multiplication operator when a digit is followed by a parenthesis.
         expression = expression.replace(/(\d)\s*\(/g, '$1*(');
+
+        // Auto-close any unmatched opening parentheses.
+        const openParens = (expression.match(/\(/g) || []).length;
+        const closedParens = (expression.match(/\)/g) || []).length;
+        if(openParens > closedParens) {
+            expression += ')'.repeat(openParens - closedParens);
+        }
+
         try {
             const result = eval(expression);
             if (!isFinite(result)) {
