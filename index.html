@@ -89,17 +89,15 @@
     </div>
 </div>
 
-<!-- JavaScript for handling input, evaluation, scrolling, and 2ndF toggling -->
+<!-- JavaScript for handling input, evaluation, scrolling, and keyboard input -->
 <script>
     // Global variables
     let lastAns = "";
     let isSecondFunction = false;
     let evaluated = false;
-
     let sqrtMode = false;
     let sqrtRadicand = "";
     let currentRoot = "";
-
     let expMode = false;
     let expExponent = "";
     let baseExp = "";
@@ -116,16 +114,15 @@
             "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9"};
         return str.split('').map(c => revMap[c] || c).join('');
     }
-
     function updateScroll() {
         const screenElem = document.getElementById('calc-screen');
         screenElem.scrollLeft = screenElem.scrollWidth;
     }
-
     function addOverline(str) {
         return str.split('').map(c => c + "\u0305").join('');
     }
 
+    // 2ndF toggle remains unchanged.
     document.getElementById("second-toggle").addEventListener("click", function(e){
         isSecondFunction = !isSecondFunction;
         document.querySelectorAll(".dual").forEach(function(btn) {
@@ -134,12 +131,27 @@
         e.stopPropagation();
     });
 
+    // ALPHA button now simply opens a prompt as before.
     document.querySelectorAll('.keys button:not(.equal)').forEach(function(button) {
         button.addEventListener('click', function(e) {
-            if(this.id === "second-toggle") return;
-            const btnText = this.innerText;
             const screen = document.getElementById('calc-screen');
 
+            // ALPHA button handling
+            if(this.classList.contains("alpha")){
+                e.preventDefault();
+                let inputChar = prompt("Enter variable/letter:");
+                if (inputChar !== null && inputChar !== "") {
+                    if(screen.value === "0") { screen.value = ""; }
+                    screen.value += inputChar;
+                    updateScroll();
+                }
+                return;
+            }
+
+            // Get button text
+            const btnText = this.innerText;
+
+            // Clear screen if last evaluation was completed and a number/dot is pressed
             if(evaluated && /^[0-9.]$/.test(btnText)) {
                 screen.value = "";
                 evaluated = false;
@@ -252,6 +264,7 @@
         });
     });
 
+    // Evaluate expression on equals button click
     document.querySelector('.equal').addEventListener('click', function() {
         const screen = document.getElementById('calc-screen');
         let expression = screen.value;
@@ -281,8 +294,7 @@
             .replace(/x\^y/g, '**')
             .replace(/²/g, "**2")
             .replace(/³/g, "**3");
-        // Instead of throwing an error when a digit is followed by a parenthesis,
-        // insert an explicit multiplication operator.
+        // Insert explicit multiplication operator when a digit is followed by a parenthesis.
         expression = expression.replace(/(\d)\s*\(/g, '$1*(');
         try {
             const result = eval(expression);
@@ -299,6 +311,38 @@
         }
         evaluated = true;
         updateScroll();
+    });
+
+    // Listen for physical keyboard input - only allow numbers, a dot, Backspace and Enter.
+    document.addEventListener('keydown', function(e) {
+        const screen = document.getElementById('calc-screen');
+        // Allow only digits (0-9) and the decimal point.
+        if (/^[0-9.]$/.test(e.key)) {
+            if(screen.value === "0" || evaluated) {
+                screen.value = e.key;
+                evaluated = false;
+            } else {
+                screen.value += e.key;
+            }
+            updateScroll();
+            // Prevent default to avoid any unintended behavior.
+            e.preventDefault();
+        }
+        // Backspace: remove the last character.
+        else if (e.key === "Backspace") {
+            if(screen.value.length > 0) {
+                screen.value = screen.value.slice(0, -1);
+            }
+            if(screen.value === "") screen.value = "0";
+            updateScroll();
+            e.preventDefault();
+        }
+        // Enter: trigger evaluation.
+        else if (e.key === "Enter") {
+            document.querySelector('.equal').click();
+            e.preventDefault();
+        }
+        // Otherwise, ignore non-numeric keys.
     });
 </script>
 </body>
