@@ -39,8 +39,8 @@
             <div class="row function-keys">
                 <button>hyp</button>
                 <button class="dual" data-primary="sin" data-secondary="sin⁻¹">sin</button>
+                <!-- Updated cos button: supports both cos and cos⁻¹ -->
                 <button class="dual" data-primary="cos" data-secondary="cos⁻¹">cos</button>
-                <!-- Updated tan button: supports both tan and tan⁻¹ -->
                 <button class="dual" data-primary="tan" data-secondary="tan⁻¹">tan</button>
                 <button>x²</button>
                 <button>x³</button>
@@ -90,7 +90,7 @@
     </div>
 </div>
 
-<!-- JavaScript for handling input, evaluation, scrolling, and key toggling -->
+<!-- JavaScript for handling input, evaluation, scrolling, and function toggling -->
 <script>
     // Global variables
     let lastAns = "";
@@ -205,11 +205,12 @@
             else if (btnText === "sin" || btnText === "sin⁻¹") {
                 if(screen.value === "0") { screen.value = ""; }
                 screen.value += (btnText === "sin" ? "sin(" : "asin(");
-            } else if (btnText === "cos" || btnText === "cos⁻¹") {
+            }
+            // Updated cos button handling: supports both cos and cos⁻¹.
+            else if (btnText === "cos" || btnText === "cos⁻¹") {
                 if(screen.value === "0") { screen.value = ""; }
                 screen.value += (btnText === "cos" ? "cos(" : "acos(");
             }
-            // Updated tan button handling: supports tan and tan⁻¹
             else if (btnText === "tan" || btnText === "tan⁻¹") {
                 if(screen.value === "0") { screen.value = ""; }
                 screen.value += (btnText === "tan" ? "tan(" : "atan(");
@@ -262,7 +263,7 @@
         });
     });
 
-    // Equals button event listener with updated evaluation for tan functions.
+    // Equals button event listener with updated evaluation for cos functions.
     document.querySelector('.equal').addEventListener('click', function() {
         const screen = document.getElementById('calc-screen');
         let expression = screen.value;
@@ -287,7 +288,7 @@
             .replace(/sin\(/g, "Math.sin(")
             .replace(/acos\(/g, "Math.acos(")
             .replace(/cos\(/g, "Math.cos(")
-            // Replace atan( before tan( to avoid conflict
+            // Handle tan functions as before.
             .replace(/atan\(/g, "Math.atan(")
             .replace(/tan\(/g, "Math.tan(");
         expression = expression.replace(/×/g, '*')
