@@ -38,8 +38,8 @@
             <!-- Function Keys Row -->
             <div class="row function-keys">
                 <button>hyp</button>
+                <!-- Updated sin button: supports both sin and sin⁻¹ -->
                 <button class="dual" data-primary="sin" data-secondary="sin⁻¹">sin</button>
-                <!-- Updated cos button: supports both cos and cos⁻¹ -->
                 <button class="dual" data-primary="cos" data-secondary="cos⁻¹">cos</button>
                 <button class="dual" data-primary="tan" data-secondary="tan⁻¹">tan</button>
                 <button>x²</button>
@@ -202,11 +202,11 @@
                     screen.value = formattedAns;
                 }
             }
+            // Updated sin button handling: supports both sin and sin⁻¹.
             else if (btnText === "sin" || btnText === "sin⁻¹") {
                 if(screen.value === "0") { screen.value = ""; }
                 screen.value += (btnText === "sin" ? "sin(" : "asin(");
             }
-            // Updated cos button handling: supports both cos and cos⁻¹.
             else if (btnText === "cos" || btnText === "cos⁻¹") {
                 if(screen.value === "0") { screen.value = ""; }
                 screen.value += (btnText === "cos" ? "cos(" : "acos(");
@@ -263,7 +263,7 @@
         });
     });
 
-    // Equals button event listener with updated evaluation for cos functions.
+    // Equals button event listener with updated evaluation for sin functions.
     document.querySelector('.equal').addEventListener('click', function() {
         const screen = document.getElementById('calc-screen');
         let expression = screen.value;
@@ -288,7 +288,6 @@
             .replace(/sin\(/g, "Math.sin(")
             .replace(/acos\(/g, "Math.acos(")
             .replace(/cos\(/g, "Math.cos(")
-            // Handle tan functions as before.
             .replace(/atan\(/g, "Math.atan(")
             .replace(/tan\(/g, "Math.tan(");
         expression = expression.replace(/×/g, '*')
