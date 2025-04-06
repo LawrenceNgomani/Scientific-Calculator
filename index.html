@@ -9,7 +9,7 @@
         .screen {
             overflow-x: auto;
         }
-        /* Make the calculator screen's input wide and nowrap */
+            /* Calculator screen's input wide and nowrap */
         #calc-screen {
             width: 100%;
             white-space: nowrap;
@@ -24,8 +24,10 @@
         <div class="screen">
             <input type="text" id="calc-screen" readonly value="0">
         </div>
+
         <!-- Keys Container -->
         <div class="keys">
+
             <!-- Top Keys Row -->
             <div class="row top-keys">
                 <button id="second-toggle" class="shift">2ndF</button>
@@ -35,6 +37,7 @@
                 <button class="red">Del</button>
                 <button class="red">AC</button>
             </div>
+
             <!-- Function Keys Row -->
             <div class="row function-keys">
                 <button>hyp</button>
@@ -48,6 +51,7 @@
                 <button class="dual" data-primary="10^x" data-secondary="e^x">10^x</button>
                 <button class="dual" data-primary="1/x" data-secondary="Ran#">1/x</button>
             </div>
+
             <!-- Bottom Keys Row (Numpad & Operators) -->
             <div class="row bottom-keys">
                 <table>
@@ -81,6 +85,7 @@
                     </tr>
                 </table>
             </div>
+
             <!-- Equals Row -->
             <div class="row equals-row">
                 <button class="equal wide">=</button>
@@ -89,7 +94,7 @@
     </div>
 </div>
 
-<!-- JavaScript for handling input, evaluation, scrolling, and function toggling -->
+<!-- Handling input, evaluation, scrolling, and function toggling -->
 <script>
     // Global variables
     let lastAns = "";
@@ -126,7 +131,7 @@
         return str.split('').map(c => c + "\u0305").join('');
     }
 
-    // 2ndF toggle functionality.
+    // 2ndF button, toggle functionality on buttons with a seconary action.
     document.getElementById("second-toggle").addEventListener("click", function(e){
         isSecondFunction = !isSecondFunction;
         document.querySelectorAll(".dual").forEach(function(btn) {
@@ -266,6 +271,7 @@
     });
 
     // Equals button event listener: auto-closes any unmatched parentheses.
+    
     document.querySelector('.equal').addEventListener('click', function() {
         const screen = document.getElementById('calc-screen');
         let expression = screen.value;
