@@ -270,8 +270,8 @@
         });
     });
 
-    // Equals button event listener: auto-closes any unmatched parentheses.
-    
+    /* Equals button event listener: auto-closes any unmatched parentheses.
+        like when one leaves it as "9(9 instead of 9(9)".*/
     document.querySelector('.equal').addEventListener('click', function() {
         const screen = document.getElementById('calc-screen');
         let expression = screen.value;
@@ -305,7 +305,7 @@
             .replace(/atan\(/g, "Math.atan(")
             .replace(/tan\(/g, "Math.tan(");
 
-        // Replace operator symbols.
+        // Replace operator symbols to evade errors in case the computer does not understaand the input.
         expression = expression.replace(/×/g, '*')
             .replace(/÷/g, '/')
             .replace(/x\^y/g, '**')
