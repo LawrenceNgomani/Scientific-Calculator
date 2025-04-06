@@ -65,7 +65,7 @@
 }
 
 /* Bottom Keys Row */
-/* Since these buttons are arranged in a table, we set the table to full width */
+/* Since these buttons are arranged in a table like format, we shall set the table to full width */
 .row.bottom-keys table {
     width: 100%;
     border-collapse: collapse;
@@ -80,7 +80,7 @@
     justify-content: center;
 }
 
-/* Button Styling for All Keys */
+/* Button Styling for All Keys in general.*/
 .keys button,
 .row.equals-row button,
 .row.bottom-keys button {
@@ -92,7 +92,7 @@
     background: #555;
     color: #fff;
     cursor: pointer;
-    transition: all 0.1s ease; /* Transition for pressed effect */
+    transition: all 0.5s ease; /* Transition for pressed effect */
 }
 
 /* Button pressed effect */
